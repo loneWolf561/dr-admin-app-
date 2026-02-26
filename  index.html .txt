@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d6efd">
+  <title>Dr. Admin Portal</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-container, .admin-panel {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+    .hidden { display: none !important; }
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .dashboard-grid {
+      display: grid;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+    }
+    h1 { color: #333; margin-bottom: 10px; font-size: 24px; }
+    .status { color: #28a745; font-weight: bold; margin-bottom: 20px; }
+    .lock-btn { background: #dc3545; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-container">
+    <h1>🔐 Dr. Admin</h1>
+    <p style="color: #666; margin-bottom: 20px;">Private Access Only</p>
+    <input type="password" id="masterKey" placeholder="Enter your password">
+    <button onclick="authenticate()">Unlock</button>
+    <p id="errorMsg" style="color: #dc3545; margin-top: 10px; display: none;">Wrong password</p>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="adminPanel" class="admin-panel hidden">
+    <h1>👨‍⚕️ Control Center</h1>
+    <p class="status">● Secure Connection</p>
+    
+    <div class="dashboard-grid">
+      <div class="card">
+        <h3>📊 Website</h3>
+        <p>Active</p>
+      </div>
+      <div class="card">
+        <h3>🔗 Links Shared</h3>
+        <p id="linkCount">0</p>
+      </div>
+      <div class="card">
+        <h3>⚡ Actions</h3>
+        <button onclick="generateLink()">Create Patient Link</button>
+      </div>
+    </div>
+    
+    <button class="lock-btn" onclick="logout()">🔒 Lock App</button>
+  </div>
+
+  <script>
+    // 🔴 CHANGE THIS PASSWORD TO YOUR OWN!
+    const MASTER_KEY = 'doctor123';
+    
+    if (localStorage.getItem('adminSession') === 'active') {
+      showAdmin();
+    }
+
+    function authenticate() {
+      const input = document.getElementById('masterKey').value;
+      if (input === MASTER_KEY) {
+        localStorage.setItem('adminSession', 'active');
+        showAdmin();
+      } else {
+        const err = document.getElementById('errorMsg');
+        err.style.display = 'block';
+        setTimeout(() => err.style.display = 'none', 2000);
+      }
+    }
+
+    function showAdmin() {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('adminSession');
+      location.reload();
+    }
+
+    function generateLink() {
+      const id = Math.random().toString(36).substring(7);
+      const link = `https://your-doctor-site.com/patient/${id}`;
+      
+      const temp = document.createElement('input');
+      temp.value = link;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      
+      let count = parseInt(document.getElementById('linkCount').textContent);
+      document.getElementById('linkCount').textContent = count + 1;
+      
+      alert('Link copied: ' + link);
+    }
+
+    setTimeout(() => {
+      if (localStorage.getItem('adminSession')) logout();
+    }, 30 * 60 * 1000);
+  </script>
+</body>
+</html>

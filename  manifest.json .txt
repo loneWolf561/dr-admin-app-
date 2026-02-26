@@ -1,0 +1,20 @@
+{
+  "name": "Dr. Admin Portal",
+  "short_name": "DrAdmin",
+  "start_url": "/dr-admin-app-/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/0d6efd/ffffff?text=Dr",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/0d6efd/ffffff?text=Dr",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
